@@ -1,4 +1,3 @@
-
 export function setStorageSync(key: string, value: any) {
   return localStorage.setItem(key, value);
 }

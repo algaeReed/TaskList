@@ -1,146 +1,127 @@
 import { useEffect, useRef, useState } from "react";
-import reactLogo from "./assets/react.svg";
 import "./App.css";
-import { Card, Input, InputRef } from "antd";
-import dayjs from 'dayjs';
+import { Input } from "antd";
+import dayjs from "dayjs";
 import { getStorageSync, setStorageSync } from "./utils/storage";
 import { guid } from "./utils/guid";
-import "./dist/list.css";
-import { invoke } from '@tauri-apps/api/tauri';
-import { getCurrent } from '@tauri-apps/api/window'
-import CloseCircleOutlined from "@ant-design/icons/lib/icons/CloseCircleOutlined";
-function App () {
-  const [list, setList] = useState<any>([]);
+import "./styles.css";
+import { invoke } from "@tauri-apps/api/tauri";
+import { getCurrent } from "@tauri-apps/api/window";
+import { CloseCircleOutlined } from "@ant-design/icons";
+import React from "react";
 
-  const [inputValue, setInputValue] = useState<any>("");
-  const [inputValueId, setInputValueId] = useState<any>("");
-  const inputRef = useRef<InputRef>(null);
-
-  const [cover, setCover] = useState<any>(false)
+function App() {
   useEffect(() => {
     const currentWindow = getCurrent();
-    console.log(currentWindow)
-    invoke('set_window_always_on_top', {
+    console.log(currentWindow);
+    invoke("set_window_always_on_top", {
       window: currentWindow,
       always_on_top: true,
       alwaysOnTop: true,
-      decorations: true
-
+      decorations: true,
     });
-    invoke('handle_custom_event',);
+    invoke("handle_custom_event");
   }, []);
 
-
-  useEffect(() => {
-    let _list = getStorageSync("_list");
-    console.log(_list);
-    if (_list) {
-      _list = JSON.parse(_list);
-      setList(_list);
-    }
-  }, []);
-
-  useEffect(() => {
-    // if (list == 0) {
-    //   setStorageSync("_list", JSON.stringify([]));
-    // }
-    if (list && list.length > 0) {
-      setStorageSync("_list", JSON.stringify(list));
-    }
-
-  }, [list]);
-  const handleDetete = (id: string) => {
-    console.log(id)
-    const newList = list.filter((item: any) => item.id !== id);
-    console.log(newList)
-    setList(newList);
-  }; const handleOnPressEnter = (e: any) => {
-
-    if (inputValueId) {
-      const newList = list.map((item: any) => {
-        if (item.id === inputValueId.id) {
-          return { ...item, value: e.target.value };
-        }
-        return item;
-      });
-      setList(newList);
-      setInputValueId({});
-      setInputValue("")
-      return;
-    }
-
-    console.log(e.target.value)
-    if (!e.target.value) {
-      return
-    }
-    list && list.length > 0
-      ? setList([...list, { id: guid(), value: e.target.value, time: dayjs().format('YYYY-MM-DD HH:mm:ss') }])
-      : setList([{ id: guid(), value: e.target.value, time: dayjs().format('YYYY-MM-DD HH:mm:ss') }]);
-    dayjs(1)
-    setInputValue("")
+  interface TodoList {
+    id: string;
+    title: string;
+    content?: string;
+    time: string;
   }
+  [];
 
-  const handleClickValue = (value: any) => {
-    console.log(value)
-    setInputValue(value.value)
-    setInputValueId({
-      id: value.id
-    })
-    setCover(true)
-    handleAutoFocus()
+  const [todo, setTodo] = useState<TodoList[]>(
+    JSON.parse(getStorageSync("_list") || "[]")
+  );
+
+  const [inputValue, setInputValue] = useState("");
+
+  function handleDetete(id: string) {
+    const newTodo = todo.filter((e) => e.id !== id);
+    setTodo(newTodo);
+    setStorageSync("_list", JSON.stringify(newTodo));
   }
-
-  const handleAutoFocus = () => {
-    inputRef.current!.focus({
-      cursor: 'start',
+  function handleOnPressEnter() {
+    if (inputValue.trim() === "") return; // check if input is empty
+    const newTodo: TodoList = {
+      id: guid(),
+      title: inputValue.trim(),
+      content: "",
+      time: dayjs().format("YYYY-MM-DD HH:mm:ss"),
+    };
+    setTodo([...todo, newTodo]);
+    setStorageSync("_list", JSON.stringify([...todo, newTodo]));
+    setInputValue(""); // clear input after adding todo
+  }
+  function handleClickEditorValue(e: TodoList) {
+    const newTodo = todo.map((item) => {
+      if (item.id === e.id) {
+        return {
+          ...item,
+          content: "new content",
+        };
+      }
+      return item;
     });
+    setTodo(newTodo);
+    setStorageSync("_list", JSON.stringify(newTodo));
   }
+
+
   return (
-    <div className="container" >
-
-      < div className="top" data-tauri-drag-region>
-        <div className="menu" >
-          {/* 1 */}
-        </div>
+    <div className="container">
+      <div className="top" data-tauri-drag-region>
+        <div className="menu">{/* 1 */}</div>
         <div className="input">
-          <Input placeholder="..." onPressEnter={handleOnPressEnter} allowClear ref={inputRef}
+          <Input
+            placeholder="..."
+            allowClear
+            onPressEnter={handleOnPressEnter}
             onChange={(e) => {
-              console.log(e)
+              console.log(e);
               setInputValue(e.target.value);
             }}
             value={inputValue}
           />
         </div>
       </div>
-      < div className="main" data-tauri-drag-region>
-
-        <div className="list" >
-          {
-            list.sort((a: { time: any; }, b: { time: string; }) => b.time.localeCompare(a.time)).map((e: { value: string; time: string; id: string }) => {
-              return <>
-                <div className={"cell"} key={e.id}>
-                  <div className="todo" onClick={() => {
-                    handleClickValue(e)
-                  }}>
-                    {e.value}
-                  </div>
-                  <div className="time">
-                    {e.time}
-                    <div className="icon"
+      <div className="main" data-tauri-drag-region>
+        <div className="list">
+          {todo
+            .sort((a: { time: string }, b: { time: string }) =>
+              b.time.localeCompare(a.time)
+            )
+            .map((e: TodoList) => {
+              return (
+                <React.Fragment key={e.id}>
+                  <div className={"cell"}>
+                    <div
+                      className="todo"
                       onClick={() => {
-                        handleDetete(e.id)
-                      }}>
-                      <CloseCircleOutlined />
+                        handleClickEditorValue(e);
+                      }}
+                    >
+                      {e.title}
                     </div>
-
+                    <div className="time">
+                      {e.time}
+                      <div
+                        className="icon"
+                        onClick={() => {
+                          handleDetete(e.id);
+                        }}
+                      >
+                        <CloseCircleOutlined />
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </>
-            })
-          }
+                </React.Fragment>
+              );
+            })}
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 }
 export default App;
