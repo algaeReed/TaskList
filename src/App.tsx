@@ -54,20 +54,6 @@ function App() {
     setStorageSync("_list", JSON.stringify([...todo, newTodo]));
     setInputValue(""); // clear input after adding todo
   }
-  function handleClickEditorValue(e: TodoList) {
-    const newTodo = todo.map((item) => {
-      if (item.id === e.id) {
-        return {
-          ...item,
-          content: "new content",
-        };
-      }
-      return item;
-    });
-    setTodo(newTodo);
-    setStorageSync("_list", JSON.stringify(newTodo));
-  }
-
 
   return (
     <div className="container">
@@ -96,12 +82,7 @@ function App() {
               return (
                 <React.Fragment key={e.id}>
                   <div className={"cell"}>
-                    <div
-                      className="todo"
-                      onClick={() => {
-                        handleClickEditorValue(e);
-                      }}
-                    >
+                    <div className="todo" onClick={() => {}}>
                       {e.title}
                     </div>
                     <div className="time">
