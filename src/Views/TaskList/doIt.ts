@@ -18,8 +18,8 @@ const setBg = (bg: string) => {
   console.log(bg);
 };
 const cwd = (match: RegExpMatchArray | []) => {
-  console.log(currentCwd);
   const currentCwd = match[1];
+  console.log(currentCwd);
   if (currentCwd == "") {
     message.warning({ content: "请输入正确指令" });
   } else {
