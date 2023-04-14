@@ -7,7 +7,6 @@
     width: calc(100vw - 20px);
     height: 100vh;
     overflow: auto;
-    background-color: antiquewhite;
     border-radius: 5px;
 
     .top {
@@ -16,7 +15,7 @@
         align-items: center;
 
         .input {
-            background: transparent;
+            width: calc(100vw - 10px);
         }
     }
 
@@ -35,17 +34,18 @@
                 box-shadow: 0 6px 16px 0 rgba(0, 0, 0, 0.08);
                 align-items: flex-end;
                 opacity: 1;
-
                 transition: opacity 0.3s ease-in-out;
 
                 .todo {
-                    width: 200px;
+                    width: 70%;
                     word-break: break-all;
                     max-height: 60px;
                     overflow-y: auto;
                 }
 
                 .time {
+                    margin-left: 2%;
+                    width: 28%;
                     display: flex;
                     font-size: small;
                     color: #97a8bb;
