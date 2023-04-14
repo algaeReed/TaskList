@@ -20,22 +20,18 @@ const setBg = (bg: string) => {
 const cwd = (match: RegExpMatchArray | []) => {
   const currentCwd = match[1];
   console.log(currentCwd);
-  if (currentCwd == "") {
-    message.warning({ content: "请输入正确指令" });
-  } else {
-    switch (currentCwd) {
-      case "who":
-        message.success({
-          content: "i am success!",
-        });
-        break;
-      case "bg":
-        setBg(currentCwd);
-        break;
-      default:
-        message.warning({ content: "请输入正确指令" });
-        break;
-    }
+  switch (currentCwd) {
+    case "who":
+      message.success({
+        content: "i am success!",
+      });
+      break;
+    case "bg":
+      setBg(currentCwd);
+      break;
+    default:
+      message.warning({ content: "请输入正确指令" });
+      break;
   }
   // rest of the function code
 };
