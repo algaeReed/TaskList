@@ -28,6 +28,8 @@ function TaskList() {
     setStorageSync("_list", JSON.stringify(newTodo));
   }
   function handleOnPressEnter() {
+    if (inputValue.trim() === "") return; // check if input is empty
+
     //inputValue首个字符串是冒号
     if (inputValue.trim().startsWith(":")) {
       // Use regex to extract the string after the colon in inputValue
@@ -36,7 +38,6 @@ function TaskList() {
       cwd(match);
       return;
     }
-    if (inputValue.trim() === "") return; // check if input is empty
     const newTodo: TodoList = {
       id: guid(),
       title: inputValue.trim(),
