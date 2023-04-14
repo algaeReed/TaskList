@@ -30,13 +30,9 @@ function TaskList() {
   function handleOnPressEnter() {
     //inputValue首个字符串是冒号
     if (inputValue.trim().startsWith(":")) {
-      console.log(inputValue);
-      console.log(222);
       // Use regex to extract the string after the colon in inputValue
       const regex = /:(.*)/;
       const match = inputValue.trim().match(regex) ?? [];
-      console.log(55555);
-
       cwd(match);
       return;
     }
