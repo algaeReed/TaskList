@@ -1,15 +1,12 @@
-import { useEffect, useState } from "react";
-import { Input, message } from "antd";
-import dayjs from "dayjs";
-import "./list.scss";
-import { invoke } from "@tauri-apps/api/tauri";
-import { getCurrent } from "@tauri-apps/api/window";
 import { CloseCircleOutlined } from "@ant-design/icons";
-import React from "react";
-import { getStorageSync, setStorageSync } from "../../utils/storage";
+import { Input } from "antd";
+import dayjs from "dayjs";
+import React, { useEffect, useState } from "react";
 import { guid } from "../../utils/guid";
-import { TodoList } from "./TodoList";
+import { getStorageSync, setStorageSync } from "../../utils/storage";
 import { cwd, initWin } from "./doIt";
+import "./list.scss";
+import { TodoList } from "./TodoList";
 
 function TaskList() {
   useEffect(() => {
